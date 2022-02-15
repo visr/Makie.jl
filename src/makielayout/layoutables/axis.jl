@@ -1,3 +1,27 @@
+function midleft(r::Rect2f)
+    p = Makie.origin(r)
+    w = widths(r)
+    Point2f(p[1], p[2] + w[2] / 2)
+end
+
+function midright(r::Rect2f)
+    p = Makie.origin(r)
+    w = widths(r)
+    Point2f(p[1] + w[1], p[2] + w[2] / 2)
+end
+
+function midtop(r::Rect2f)
+    p = Makie.origin(r)
+    w = widths(r)
+    Point2f(p[1] + w[1] / 2, p[2] + w[2])
+end
+
+function midbottom(r::Rect2f)
+    p = Makie.origin(r)
+    w = widths(r)
+    Point2f(p[1] + w[1] / 2, p[2])
+end
+
 """
     layoutable(Axis, fig_or_scene; bbox = nothing, kwargs...)
 
@@ -128,8 +152,10 @@ function layoutable(::Type{<:Axis}, fig_or_scene::Union{Figure, Scene}; bbox = n
         nearclip = -10_000f0
         farclip = 10_000f0
 
-        left, bottom = Makie.apply_transform(t, Point(minimum(lims)))
-        right, top = Makie.apply_transform(t, Point(maximum(lims)))
+        left = Makie.apply_transform(t, midleft(lims))[1]
+        right = Makie.apply_transform(t, midright(lims))[1]
+        top = Makie.apply_transform(t, midtop(lims))[2]
+        bottom = Makie.apply_transform(t, midbottom(lims))[2]
 
         leftright = xrev ? (right, left) : (left, right)
         bottomtop = yrev ? (top, bottom) : (bottom, top)
